@@ -38,3 +38,51 @@
  */
 
 // Your code goes here...
+const red = 'red';
+const truth = 'true';
+const olditems = [];
+const faveItems = [];
+
+
+const cardContain = document.querySelectorAll('.cardsContainer div');
+const allCards = document.querySelectorAll('.card');
+
+
+
+cardContain.forEach(function (e) {
+  olditems.push(e.id)
+});
+
+localStorage.setItem('favorites',JSON.stringify(faveItems));
+
+const storageFavsDataRaw = localStorage.getItem('favorites');
+
+const updatedData = JSON.parse(storageFavsDataRaw);
+
+console.log(updatedData);
+
+
+allCards.forEach(item =>{
+  item.addEventListener('click',()=>{
+
+    if (item.getAttribute('data-fav') === 'false') {
+      item.classList.add(red);
+      item.setAttribute('data-fav',truth);
+      updatedData.push(item.id);
+      
+      localStorage.setItem("favorites", JSON.stringify(updatedData));
+  
+    } else if (item.getAttribute('data-fav') === 'true') {
+      item.classList.remove(red);
+      item.setAttribute('data-fav','false');
+      
+      updatedData.splice(updatedData.indexOf(item.id), 1);
+      localStorage.setItem("favorites", JSON.stringify(updatedData));
+    }
+
+    //console.log(faveItems);
+    console.log(updatedData);
+  });
+});
+
+
