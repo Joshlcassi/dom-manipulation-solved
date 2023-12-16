@@ -40,26 +40,22 @@
 // Your code goes here...
 const red = 'red';
 const truth = 'true';
-const olditems = [];
 const faveItems = [];
 
 
-const cardContain = document.querySelectorAll('.cardsContainer div');
+const cardContain = document.querySelector('.cardsContainer');
 const allCards = document.querySelectorAll('.card');
 
+const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 
 
-cardContain.forEach(function (e) {
-  olditems.push(e.id)
+favorites.forEach((favId) => {
+  const card = document.getElementById(favId);
+  if (card) {
+    card.style.backgroundColor = "red";
+    card.setAttribute("data-fav", "true");
+  }
 });
-
-localStorage.setItem('favorites',JSON.stringify(faveItems));
-
-const storageFavsDataRaw = localStorage.getItem('favorites');
-
-const updatedData = JSON.parse(storageFavsDataRaw);
-
-console.log(updatedData);
 
 
 allCards.forEach(item =>{
@@ -68,21 +64,20 @@ allCards.forEach(item =>{
     if (item.getAttribute('data-fav') === 'false') {
       item.classList.add(red);
       item.setAttribute('data-fav',truth);
-      updatedData.push(item.id);
-      
-      localStorage.setItem("favorites", JSON.stringify(updatedData));
+      favorites.push(item.id);
   
     } else if (item.getAttribute('data-fav') === 'true') {
       item.classList.remove(red);
       item.setAttribute('data-fav','false');
+      const index = favorites.indexOf(item.id);
+      if (index> -1 ) {
+        favorites.splice(index,1);
+      }
       
-      updatedData.splice(updatedData.indexOf(item.id), 1);
-      localStorage.setItem("favorites", JSON.stringify(updatedData));
     }
-
-    //console.log(faveItems);
-    console.log(updatedData);
+    localStorage.setItem("favorites", JSON.stringify(favorites));
   });
 });
+
 
 
