@@ -38,46 +38,56 @@
  */
 
 // Your code goes here...
-const red = 'red';
-const truth = 'true';
-const faveItems = [];
+function getFaveLocalStor() {
+  const favorites = localStorage.getItem('favorites');
+  return favorites ? JSON.parse(favorites):[];
+}
 
+function saveFavesToLocal(favorites) {
+  localStorage.setItem('favorites',JSON.stringify(favorites));
+}
 
-const cardContain = document.querySelector('.cardsContainer');
-const allCards = document.querySelectorAll('.card');
+function addToFaves(id) {
+  const favorites = getFaveLocalStor();
+  favorites.push(id);
+  saveFavesToLocal(favorites);
+}
 
-const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+function removeFromFaves(id) {
+  let favorites = getFaveLocalStor();
+  favorites = favorites.filter(favId => favId !== id);
+  saveFavesToLocal(favorites);
+}
 
+function updateCard(card, isFave) {
+ if (isFave) {
+  card.classList.add('red');
+ } else {
+  card.classList.remove('red');
+ }
+}
 
-favorites.forEach((favId) => {
-  const card = document.getElementById(favId);
-  if (card) {
-    card.style.backgroundColor = "red";
-    card.setAttribute("data-fav", "true");
+function cardClick(event) {
+  const card = event.target;
+  const id = card.id;
+  const isFave = getFaveLocalStor().includes(id);
+
+  if (isFave) {
+    removeFromFaves(id);
+    updateCard(card, false);
+  } else {
+    addToFaves(id);
+    updateCard(card, true);
   }
-});
+}
 
+document.addEventListener('DOMContentLoaded',()=>{
+  const allCards = document.querySelectorAll('.card');
+  const favorites = getFaveLocalStor();
 
-allCards.forEach(item =>{
-  item.addEventListener('click',()=>{
-
-    if (item.getAttribute('data-fav') === 'false') {
-      item.classList.add(red);
-      item.setAttribute('data-fav',truth);
-      favorites.push(item.id);
-  
-    } else if (item.getAttribute('data-fav') === 'true') {
-      item.classList.remove(red);
-      item.setAttribute('data-fav','false');
-      const index = favorites.indexOf(item.id);
-      if (index> -1 ) {
-        favorites.splice(index,1);
-      }
-      
-    }
-    localStorage.setItem("favorites", JSON.stringify(favorites));
+  allCards.forEach(card =>{
+    card.addEventListener('click',cardClick);
+    const isFave = favorites.includes(card.id);
+    updateCard(card,isFave);
   });
 });
-
-
-
