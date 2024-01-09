@@ -68,25 +68,29 @@ function updateCard(card, isFave) {
 }
 
 function cardClick(event) {
-  const card = event.target;
-  const id = card.id;
-  const isFave = getFaveLocalStor().includes(id);
+  if (event.target.classList.contains('card')) {
+    const card = event.target;
+    const id = card.id;
+    const isFave = getFaveLocalStor().includes(id);
 
-  if (isFave) {
-    removeFromFaves(id);
-    updateCard(card, false);
-  } else {
-    addToFaves(id);
-    updateCard(card, true);
+    if (isFave) {
+      removeFromFaves(id);
+      updateCard(card, false);
+    } else {
+      addToFaves(id);
+      updateCard(card, true);
+    }
   }
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
+  const cardsCont = document.querySelector('.cardsContainer');
+  cardsCont.addEventListener('click',cardClick);
+  
   const allCards = document.querySelectorAll('.card');
   const favorites = getFaveLocalStor();
 
   allCards.forEach(card =>{
-    card.addEventListener('click',cardClick);
     const isFave = favorites.includes(card.id);
     updateCard(card,isFave);
   });
